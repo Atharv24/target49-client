@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://bn7lopsfpv6m7"]
+
+[ext_resource type="Script" path="res://StartScreen.gd" id="1_fiscq"]
+
+[node name="input" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 365.0
+offset_top = 184.0
+offset_right = 432.0
+offset_bottom = 250.0
+scale = Vector2(5.8608, 3.80008)
+script = ExtResource("1_fiscq")
+
+[node name="serverAddressLineEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+text = "127.0.0.1"
+
+[node name="portLineEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+text = "42069"
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Submit"
