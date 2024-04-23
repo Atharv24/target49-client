@@ -1,10 +1,46 @@
-[gd_scene load_steps=4 format=3 uid="uid://bnwg6ja2x06l2"]
+[gd_scene load_steps=13 format=3 uid="uid://bnwg6ja2x06l2"]
 
 [ext_resource type="Script" path="res://other_player.gd" id="1_3vib5"]
+[ext_resource type="PackedScene" uid="uid://cf1dcxwv6bvl3" path="res://models/Pistol.glb" id="2_eflii"]
+[ext_resource type="Texture2D" uid="uid://crkslxfvn7i43" path="res://addons/kenney_particle_pack/star_06.png" id="3_okdnn"]
+[ext_resource type="PackedScene" uid="uid://poul0x0t30ad" path="res://health_bar.tscn" id="4_533bx"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mevm0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ohu3l"]
+
+[sub_resource type="Gradient" id="Gradient_xys77"]
+offsets = PackedFloat32Array(0, 0.107616, 1)
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_x0esu"]
+gradient = SubResource("Gradient_xys77")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gyelb"]
+gravity = Vector3(2.08165e-12, 2.08165e-12, 2.08165e-12)
+angle_min = 45.0
+angle_max = 45.0
+color_ramp = SubResource("GradientTexture1D_x0esu")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4bqgc"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 0.72549, 1)
+albedo_texture = ExtResource("3_okdnn")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_s6hw7"]
+lightmap_size_hint = Vector2i(4, 4)
+material = SubResource("StandardMaterial3D_4bqgc")
+size = Vector2(0.5, 0.5)
+orientation = 2
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_aawlk"]
+viewport_path = NodePath("Sprite3D/SubViewport")
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1, 2.08165e-12)
@@ -15,3 +51,39 @@ mesh = SubResource("CapsuleMesh_mevm0")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_ohu3l")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.06994, 2.08165e-12)
+billboard = 1
+text = "HELLO"
+font_size = 128
+outline_size = 32
+
+[node name="Pistol" parent="." instance=ExtResource("2_eflii")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525055, 0.44682, -0.638036)
+
+[node name="MuzzleFlash" type="GPUParticles3D" parent="Pistol"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0722528, -0.325197)
+emitting = false
+amount = 1
+lifetime = 0.25
+one_shot = true
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_gyelb")
+draw_pass_1 = SubResource("PlaneMesh_s6hw7")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, -3.48787e-16, 3.48787e-16, 3.48787e-16, 1, -3.48787e-16, -3.48787e-16, 3.48787e-16, 1, 2.08165e-12, 1.4, 2.08165e-12)
+texture = SubResource("ViewportTexture_aawlk")
+
+[node name="SubViewport" type="SubViewport" parent="Sprite3D"]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(400, 32)
+
+[node name="HealthBar" parent="Sprite3D/SubViewport" instance=ExtResource("4_533bx")]
+offset_left = -1.0
+offset_top = 0.0
+offset_right = 407.0
+offset_bottom = 33.0
+value = 3.0
