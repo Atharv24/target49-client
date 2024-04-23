@@ -30,3 +30,11 @@ offset_left = 468.0
 offset_top = 611.0
 offset_right = 876.0
 offset_bottom = 644.0
+
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 1113.0
+offset_top = 13.0
+offset_right = 1260.0
+offset_bottom = 273.0
+text = "Score"

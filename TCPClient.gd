@@ -7,6 +7,8 @@ var other_players_dict = {}
 var player
 var self_id
 
+@onready var score_board: Label = $"../UI/Label"
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Create a UDP client
@@ -22,6 +24,8 @@ func _ready():
 	player.player_state_changed.connect(send_state)
 	player.player_shot.connect(send_player_hit)
 	udp_peer.put_packet("L;Atharv".to_utf8_buffer())
+	
+	score_board.set_text("Score:")
 
 func send_state(data: Array):
 	var coordinates = data[0]
@@ -56,6 +60,8 @@ func _process(_delta):
 			remove_player(chunks[1])
 		elif chunks[0] == "R":
 			player.reset(chunks[1])
+		elif chunks[0] == "P":
+			set_score(chunks.slice(1))
 		else:
 			print("Received unknown message: ", message)
 					
@@ -64,9 +70,18 @@ func initialize_player(data: Array):
 	var self_state = data[0].split(":")
 	self_id = int(self_state[0])
 	player.update_position(self_state[1])
-	
+	var score_arr = [self_state[0] + ":0:0"]
 	for i in range(1, len(data)):
 		create_new_player(data[i])
+		score_arr.append(data[i][0] + ":0:0")
+	set_score(score_arr)
+
+func set_score(data: Array):
+	var score_str = "Score:\n"
+	for player_data in data:
+		var chunks = player_data.split(":")
+		score_str += "Player " + chunks[0] + ": " + chunks[1] + "/" + chunks[2] + "\n"
+	score_board.set_text(score_str)
 
 func create_new_player(data: String):
 	var other_player_state = data.split(":")
@@ -76,6 +91,7 @@ func create_new_player(data: String):
 	other_players_dict[client_id] = other_player_node
 	other_player_node.set_player_id(client_id)
 	other_player_node.update_state(other_player_state.slice(1))
+	score_board.set_text(score_board.text + "Player " + other_player_state[0] + ": 0/0\n")
 
 
 func remove_player(data: String):
